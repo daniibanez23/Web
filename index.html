@@ -2,55 +2,168 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Servicios de Formación | SocialODB</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Servicios de Formación | SocialOBD</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f8;
+            color: #333;
+        }
+
+        /* ===== CABECERA MODIFICADA ===== */
+        header {
+            width: 100%;
+            height: 300px;
+            background-image:
+                linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+                url("img/cabecera-formacion.jpg");
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        header h1 {
+            color: #ffffff;
+            font-size: 2.8rem;
+            padding: 20px 40px;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 8px;
+        }
+
+        /* MENÚ */
+        nav {
+            background-color: #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin: 0 20px;
+        }
+
+        nav ul li a {
+            display: block;
+            padding: 18px 0;
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #0077cc;
+        }
+
+        /* SECCIÓN */
+        .contenedor {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .bloques {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .bloque {
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .bloque:hover {
+            transform: translateY(-8px);
+        }
+
+        .bloque img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .bloque h2 {
+            padding: 20px;
+            text-align: center;
+            font-size: 1.4rem;
+            background-color: #f9fafb;
+        }
+
+        /* FOOTER */
+        footer {
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            padding: 30px 15px;
+            margin-top: 60px;
+        }
+
+        footer p {
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+    </style>
 </head>
+
 <body>
 
-    <!-- CABECERA -->
-    <header class="hero">
-        <div class="hero-content">
-            <h1>Servicios de Formación Profesional</h1>
-            <p>Impulsamos el talento y la transformación digital</p>
+<header>
+    <h1>Servicios de Formación Profesional</h1>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="#">Inicio</a></li>
+        <li><a href="#">Servicios</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Contacto</a></li>
+    </ul>
+</nav>
+
+<section class="contenedor">
+    <div class="bloques">
+
+        <div class="bloque">
+            <img src="img/formacion.jpg" alt="Formación">
+            <h2>Formación</h2>
         </div>
-    </header>
 
-    <!-- MENÚ -->
-    <nav class="main-nav">
-        <ul>
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Servicios</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contacto</a></li>
-        </ul>
-    </nav>
+        <div class="bloque">
+            <img src="img/servicios-formacion.jpg" alt="Servicios">
+            <h2>Servicios</h2>
+        </div>
 
-    <!-- SECCIÓN PRINCIPAL -->
-    <section class="cards-section">
-        <article class="card">
-            <div class="card-image formacion"></div>
-            <h3>Formación</h3>
-        </article>
+        <div class="bloque">
+            <img src="img/blog.jpg" alt="Blog">
+            <h2>Blog</h2>
+        </div>
 
-        <article class="card">
-            <div class="card-image servicios"></div>
-            <h3>Servicios</h3>
-        </article>
+    </div>
+</section>
 
-        <article class="card">
-            <div class="card-image blog"></div>
-            <h3>Blog</h3>
-        </article>
-    </section>
-
-    <!-- PIE DE PÁGINA -->
-    <footer class="footer">
-        <p>Empresa SocialODB</p>
-        <p>Dirección de contacto: info@socialodb.com</p>
-        <hr>
-        <p class="copyright">© 2026 - Página elaborada por ChatGPT</p>
-    </footer>
+<footer>
+    <p>SocialOBD · contacto@socialobd.com · Tel: +34 912 345 678</p>
+    <p>© 2026 - Página elaborada por Chat GPT</p>
+</footer>
 
 </body>
 </html>
