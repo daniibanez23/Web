@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Tres en Raya ULTRA GAMER</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --x-color:#ff0055;
+    --o-color:#00ff99;
+}
+
+body {
+    margin:0;
+    min-height:100vh;
+    background:radial-gradient(circle at top,#1b2735,#090a0f);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:'Orbitron',sans-serif;
+    color:white;
+}
+
+.juego {
+    background:#0f172a;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 0 40px rgba(0,255,255,.4);
+    width:360px;
+    text-align:center;
+    position:relative;
+}
+
+h1 {
+    color:#00ffff;
+    text-shadow:0 0 15px #00ffff;
+}
+
+.menu {
+    display:flex;
+    justify-content:space-between;
+    margin:10px 0;
+}
+
+select, button {
+    font-family:'Orbitron';
+    padding:6px;
+    border-radius:6px;
+    border:none;
+}
+
+.tablero {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin:20px 0;
+}
+
+.celda {
+    height:90px;
+    background:#020617;
+    border-radius:12px;
+    font-size:3rem;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+}
+
+.celda:hover {
+    box-shadow:0 0 15px cyan;
+    transform:scale(1.05);
+}
+
+.x { color:var(--x-color); text-shadow:0 0 15px var(--x-color); }
+.o { color:var(--o-color); text-shadow:0 0 15px var(--o-color); }
+
+.marcador {
+    display:flex;
+    justify-content:space-between;
+}
+
+canvas {
+    position:absolute;
+    top:0;
+    left:0;
+    pointer-events:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="juego">
+<canvas id="confeti"></canvas>
+
+<h1>🎮 Tres en Raya ULTRA</h1>
+
+<div class="menu">
+    <select id="modo">
+        <option value="2">2 Jugadores</option>
+        <option value="1">Vs IA</option>
+    </select>
+
+    <select id="skin">
+        <option value="neon">Neón</option>
+        <option value="fire">Fuego</option>
+        <option value="classic">Clásico</option>
+    </select>
+</div>
+
+<div class="marcador">
+    <div>❌ <span id="p1">0</span></div>
+    <div>⭕ <span id="p2">0</span></div>
+</div>
+
+<div id="turno">Turno Jugador ❌</div>
+
+<div class="tablero" id="tablero">
+    <div class="celda"></div><div class="celda"></div><div class="celda"></div>
+    <div class="celda"></div><div class="celda"></div><div class="celda"></div>
+    <div class="celda"></div><div class="celda"></div><div class="celda"></div>
+</div>
+
+<div id="mensaje"></div>
+<button id="reset">Reiniciar</button>
+
+</div>
+
+<!-- SONIDOS -->
+<audio id="click" src="sounds/click.mp3"></audio>
+<audio id="win" src="sounds/win.mp3"></audio>
+<audio id="draw" src="sounds/draw.mp3"></audio>
+<audio id="music" src="sounds/music.mp3" loop></audio>
+
+<script>
+const celdas=[...document.querySelectorAll('.celda')];
+const turno=document.getElementById('turno');
+const msg=document.getElementById('mensaje');
+const reset=document.getElementById('reset');
+const modo=document.getElementById('modo');
+const skin=document.getElementById('skin');
+
+const sClick=click,sWin=win,sDraw=draw,sMusic=music;
+
+let jugador='X', activo=true;
+let p1=+localStorage.p1||0, p2=+localStorage.p2||0;
+document.getElementById('p1').textContent=p1;
+document.getElementById('p2').textContent=p2;
+
+const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+skin.onchange=()=>{
+    if(skin.value==='fire'){document.documentElement.style.setProperty('--x-color','#ff6600');document.documentElement.style.setProperty('--o-color','#ffaa00');}
+    else if(skin.value==='classic'){document.documentElement.style.setProperty('--x-color','#fff');document.documentElement.style.setProperty('--o-color','#aaa');}
+    else {document.documentElement.style.setProperty('--x-color','#ff0055');document.documentElement.style.setProperty('--o-color','#00ff99');}
+};
+
+function checkWin(){
+    return wins.some(w=>w.every(i=>celdas[i].textContent===jugador));
+}
+
+function iaMove(){
+    for(let i=0;i<9;i++){
+        if(!celdas[i].textContent){
+            celdas[i].textContent='O';
+            celdas[i].classList.add('o');
+            jugador='X';
+            turno.textContent='Turno Jugador ❌';
+            return;
+        }
+    }
+}
+
+celdas.forEach((c,i)=>{
+    c.onclick=()=>{
+        if(!activo||c.textContent) return;
+        sClick.play();
+        c.textContent=jugador;
+        c.classList.add(jugador==='X'?'x':'o');
+
+        if(checkWin()){
+            activo=false;
+            sWin.play();
+            jugador==='X'?p1++:p2++;
+            localStorage.p1=p1; localStorage.p2=p2;
+            document.getElementById('p1').textContent=p1;
+            document.getElementById('p2').textContent=p2;
+            msg.textContent=`🏆 Gana ${jugador}`;
+            reset.style.display='block';
+            return;
+        }
+
+        jugador=jugador==='X'?'O':'X';
+        turno.textContent=`Turno ${jugador}`;
+
+        if(modo.value==='1' && jugador==='O') setTimeout(iaMove,400);
+    };
+});
+
+reset.onclick=()=>location.reload();
+sMusic.volume=0.3; sMusic.play();
+</script>
+
+</body>
+</html>
