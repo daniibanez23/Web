@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Snake Gamer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #1b2735, #090a0f);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Orbitron', sans-serif;
+    color: #fff;
+}
+
+.juego {
+    background: #0f172a;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 0 40px rgba(0,255,255,.4);
+    text-align: center;
+}
+
+h1 {
+    color: #00ffff;
+    text-shadow: 0 0 15px #00ffff;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+}
+
+canvas {
+    background: #020617;
+    border-radius: 12px;
+    box-shadow: inset 0 0 20px rgba(0,255,255,0.3);
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px 25px;
+    font-family: 'Orbitron';
+    font-weight: bold;
+    background: linear-gradient(45deg, #00ffff, #00ff99);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="juego">
+    <h1>🐍 SNAKE GAMER</h1>
+
+    <div class="info">
+        <div>Puntos: <span id="score">0</span></div>
+        <div>Velocidad: <span id="speed">1</span></div>
+    </div>
+
+    <canvas id="game" width="300" height="300"></canvas>
+
+    <button id="restart">Volver a jugar</button>
+</div>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const box = 15;
+const rows = canvas.width / box;
+
+let snake = [{ x: 10, y: 10 }];
+let direction = 'RIGHT';
+let food = generarComida();
+let score = 0;
+let speed = 150;
+let level = 1;
+let game;
+
+document.addEventListener('keydown', cambiarDireccion);
+document.getElementById('restart').onclick = () => location.reload();
+
+function cambiarDireccion(e) {
+    if (e.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
+    if (e.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
+    if (e.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
+    if (e.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
+}
+
+function generarComida() {
+    return {
+        x: Math.floor(Math.random() * rows),
+        y: Math.floor(Math.random() * rows)
+    };
+}
+
+function dibujar() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Dibujar serpiente
+    snake.forEach((s, i) => {
+        ctx.fillStyle = i === 0 ? '#00ffff' : '#00ff99';
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.fillRect(s.x * box, s.y * box, box, box);
+    });
+
+    // Dibujar comida
+    ctx.fillStyle = '#ff0055';
+    ctx.shadowColor = '#ff0055';
+    ctx.fillRect(food.x * box, food.y * box, box, box);
+
+    ctx.shadowBlur = 0;
+
+    mover();
+}
+
+function mover() {
+    let head = { ...snake[0] };
+
+    if (direction === 'UP') head.y--;
+    if (direction === 'DOWN') head.y++;
+    if (direction === 'LEFT') head.x--;
+    if (direction === 'RIGHT') head.x++;
+
+    // Colisiones
+    if (
+        head.x < 0 || head.y < 0 ||
+        head.x >= rows || head.y >= rows ||
+        snake.some(s => s.x === head.x && s.y === head.y)
+    ) {
+        clearInterval(game);
+        document.getElementById('restart').style.display = 'block';
+        return;
+    }
+
+    snake.unshift(head);
+
+    // Comer
+    if (head.x === food.x && head.y === food.y) {
+        score++;
+        document.getElementById('score').textContent = score;
+
+        if (score % 5 === 0) {
+            speed -= 10;
+            level++;
+            document.getElementById('speed').textContent = level;
+            clearInterval(game);
+            game = setInterval(dibujar, speed);
+        }
+
+        food = generarComida();
+    } else {
+        snake.pop();
+    }
+}
+
+game = setInterval(dibujar, speed);
+</script>
+
+</body>
+</html>
